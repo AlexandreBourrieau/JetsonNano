@@ -1,2 +1,2 @@
 # JetsonNano
-Udemy - Découverte du Jetson Nano
+Udemy - Intelligence artificielle et IoT avec le Jetson Nano de nvidia
