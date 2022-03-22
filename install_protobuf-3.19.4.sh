@@ -1,49 +1,42 @@
+#
+# build protobuf using cpp implementation
+# https://jkjung-avt.github.io/tf-trt-revisited/
+#
 #!/bin/bash
 
-set -e
+PROTOBUF_VERSION=3.19.4
+PROTOBUF_URL=https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOBUF_VERSION}
+PROTOBUF_DIR=protobuf-python-${PROTOBUF_VERSION}
+PROTOC_DIR=protoc-${PROTOBUF_VERSION}-linux-aarch_64
 
-version=3.19.4
-
-folder=${HOME}/src
-mkdir -p $folder
-
-echo "** Install requirements"
-sudo apt-get install -y autoconf libtool
-
-echo "** Download protobuf-${version} sources"
-pushd $folder
-if [ ! -f protobuf-python-${version}.zip ]; then
-  wget https://github.com/protocolbuffers/protobuf/releases/download/v${version}/protobuf-python-${version}.zip
-fi
-if [ ! -f protoc-${version}-linux-aarch_64.zip ]; then
-  wget https://github.com/protocolbuffers/protobuf/releases/download/v${version}/protoc-${version}-linux-aarch_64.zip
-fi
-
-echo "** Install protoc"
-unzip protobuf-python-${version}.zip
-unzip protoc-${version}-linux-aarch_64.zip -d protoc-${version}
-sudo cp protoc-${version}/bin/protoc /usr/local/bin/protoc
-
-echo "** Build and install protobuf-${version} libraries"
-cd protobuf-${version}/
-./autogen.sh
-./configure --prefix=/usr/local
-make -j$(nproc)
-#make check  ### Disabled because "protobuf-test" would fail (JetPack-4.6)!
-sudo make install
-sudo ldconfig
-
-echo "** Update python3 protobuf module"
-# remove previous installation of python3 protobuf module
-sudo apt-get install -y python3-pip
-sudo pip3 uninstall -y protobuf
-sudo pip3 install Cython
-cd python/
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
-python3 setup.py build --cpp_implementation
-python3 setup.py test --cpp_implementation
-sudo python3 setup.py install --cpp_implementation
 
-popd
+cd /tmp && \
+    wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate ${PROTOBUF_URL}/$PROTOBUF_DIR.zip && \
+    wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate ${PROTOBUF_URL}/$PROTOC_DIR.zip && \
+    unzip ${PROTOBUF_DIR}.zip -d ${PROTOBUF_DIR} && \
+    unzip ${PROTOC_DIR}.zip -d ${PROTOC_DIR} && \
+    cp ${PROTOC_DIR}/bin/protoc /usr/local/bin/protoc && \
+    cd ${PROTOBUF_DIR}/protobuf-${PROTOBUF_VERSION} && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local && \
+    make -j$(nproc) && \
+    make check -j4 && \
+    make install && \
+    ldconfig && \
+    cd python && \
+    python3 setup.py build --cpp_implementation && \
+    python3 setup.py bdist_wheel --cpp_implementation && \
+    cp dist/*.whl /opt && \
+    pip3 install dist/*.whl && \
+    cd ../../../ && \
+    rm ${PROTOBUF_DIR}.zip && \
+    rm ${PROTOC_DIR}.zip && \
+    rm -rf ${PROTOBUF_DIR} && \
+    rm -rf ${PROTOC_DIR}
 
-echo "** Build protobuf-${version} successfully"
+#RUN python3 setup.py install --cpp_implementation && \
+#RUN pip3 install protobuf==${PROTOBUF_VERSION} --install-option="--cpp_implementation" --no-cache-dir --verbose
+
+sudo pip3 show protobuf && \
+    protoc --version
