@@ -29,6 +29,7 @@ cd /tmp && \
     ldconfig && \
     cd python && \
     python3 setup.py build --cpp_implementation && \
+    python3 setup.py test --cpp_implementation && \
     python3 setup.py bdist_wheel --cpp_implementation && \
     cp dist/*.whl /opt && \
     pip3 install dist/*.whl && \
