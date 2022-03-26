@@ -11,6 +11,9 @@ PROTOC_DIR=protoc-${PROTOBUF_VERSION}-linux-aarch_64
 
 export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=cpp
 
+# remove previous installation of python3 protobuf module
+sudo pip3 uninstall -y protobuf
+
 cd /tmp && \
     wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate ${PROTOBUF_URL}/$PROTOBUF_DIR.zip && \
     wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate ${PROTOBUF_URL}/$PROTOC_DIR.zip && \
