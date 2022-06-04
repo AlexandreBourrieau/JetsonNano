@@ -36,11 +36,9 @@ cd /tmp && \
     cd ../../../ && \
     rm ${PROTOBUF_DIR}.zip && \
     rm ${PROTOC_DIR}.zip && \
-    rm -rf ${PROTOBUF_DIR} && \
-    rm -rf ${PROTOC_DIR}
 
-#RUN python3 setup.py install --cpp_implementation && \
-#RUN pip3 install protobuf==${PROTOBUF_VERSION} --install-option="--cpp_implementation" --no-cache-dir --verbose
+RUN python3 setup.py install --cpp_implementation && \
+RUN pip3 install protobuf==${PROTOBUF_VERSION} --install-option="--cpp_implementation" --no-cache-dir --verbose
 
 sudo pip3 show protobuf && \
     protoc --version
