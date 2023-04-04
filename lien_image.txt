@@ -1,0 +1,12 @@
+Voici le lien de l'image 32G, il faudra certainement la graver sur une 64Go et augmenter la taille de la partition avec GParted pour pleinement utiliser l'espace 64Go par la suite.
+
+Utilisateur : jetson
+
+Mot de passe : jetson
+
+https://drive.google.com/file/d/1JPEFna2dx8Y2nZODArhnVxJlbtmcmN7P/view?usp=sharing
+
+
+Voici le fichier qui contient toutes les lignes de commande que j'ai entrées.
+
+https://drive.google.com/file/d/1oR_DLUEaaJt9KUl-hUZ6_xGDnd3FkmKA/view
